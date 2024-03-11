@@ -13,6 +13,6 @@ int factorial(int val)
 
 int main()
 {
-    factorial(5);   // 输出结果为：5 * 4 * 3 * 2 * 1 * 1
+    factorial(-5);   // 当传入的是负数时，程序将一直递归下去直至溢出
     return 0;
 }

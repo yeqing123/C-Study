@@ -9,7 +9,7 @@ int main()
     string str1 = "first string";
     string::size_type index = 0; // 下标使用string::size_type类型，防止其小于0
     // 分别使用while循环和传统的for循环，分别将字符串str1和str2中的所有字符转换成字符X
-    while (index < str1.size()) {
+    while (str1[index] != '\0') {
         str1[index] = 'X';
         index++;
     }

@@ -11,11 +11,14 @@ int main()
         {4, 5, 6, 7},
         {8, 9, 10, 11}
     };
-    // 版本1：使用范围for语句管理迭代过程
-    cout << "Version 1: Use range for statement" << endl;
+    
     // 声明别名
     using int_array = int[4];
+    using array_pointer = int(*)[4];  // 从内向外解读，首先声明别名是一个指针，然后声明该指针指向的是有4个元素的数组，最后声明元素的类型是整型
     typedef int integer;
+    
+    // 版本1：使用范围for语句管理迭代过程
+    cout << "Version 1: Use range for statement" << endl;
     for (int_array &row : ia) {
         for (integer col : row) {
             cout << col << " ";
@@ -24,21 +27,17 @@ int main()
     }
     // 版本2：使用下标运算符
     cout << "Version 2: Use subscript operator" << endl;
-    // 声明别名
-    using us = unsigned;
-    for (unsigned i = 0; i < 3; i++) {
-        for (unsigned j = 0; j < 4; j++) {
+    for (integer i = 0; i < 3; i++) {
+        for (integer j = 0; j < 4; j++) {
             cout << ia[i][j] << " ";
         }
         cout << endl;
     }
+    
     // 版本3：使用指针
     cout << "Version 3: Use pointers" << endl;
-    // 声明别名
-    using array_pointer = int(*)[4];  // 从内向外解读，首先声明别名是一个指针，然后声明该指针指向的是有4个元素的数组，最后声明元素的类型是整型
-    typedef int* int_pointer;
     for (array_pointer rp = ia; rp != ia + 3; rp++) {
-        for (int_pointer cp = *rp; cp != *rp + 4; cp++) {
+        for (integer *cp = *rp; cp != *rp + 4; cp++) {
             cout << *cp << " ";
         }
         cout << endl;

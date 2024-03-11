@@ -6,22 +6,23 @@ using std::endl;
 using std::string;
 int main()
 {
-    string s1, s2;
-    cout << "Please enter words continuously:" << endl;
-    // 先输入第一个单词
-    if (cin >> s1) {
-        // 连续输入单词，并判断是否存在一个单词连续出现两次的情况
-        while (cin >> s2) {
-            if (s1 == s2) {
-                cout << "Word '" << s1 << "' appears repeatedly." << endl;
-                break;    // 结束while循环
-            } else { 
-                s1 = s2;
-            }
-        }
-        if (!cin) {  // 当输入流结束时，说明没有出现单词连续重复的情况
-            cout << "No words are repeated consecutively!" << endl;
+    string prestr, currstr;
+    bool bl;    // 定义一个布尔值，用来标记是否存在一个字符串连续重复出现的情况
+    cout << "Please enter some strings:" << endl;
+    while (cin >> currstr) {
+        bl = false;
+        if (prestr == currstr) {
+            bl = true;
+            break;    // 结束while循环
+        } else { 
+            prestr = currstr;
         }
     }
+    if (bl) {  // 如果bl为真，则有重复出现的字符串，否则就是没有
+        cout << "String '" << currstr << "' appears repeatedly continuously." << endl;
+    } else {
+        cout << "No string is repeated continuously!" << endl;
+    }
+    
     return 0;
 }

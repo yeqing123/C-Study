@@ -13,7 +13,7 @@ long long fact(int val)
 int main() {
  
     int val;
-    cout << "Enter a integer: " << endl;
+    cout << "Enter a integer: ";
     // 由用户输入一个数字，我们将函数fact的返回类型改为long long，以免数值过大无法存放
     while (cin >> val) {
         cout << val << "! is: " << fact(val) << endl;
@@ -23,7 +23,7 @@ int main() {
         if (!cin || c == 'n') {
             break;
         }
-        cout << "Enter a integer: " << endl;
+        cout << "Enter a integer: ";
     }
     return 0;
 }

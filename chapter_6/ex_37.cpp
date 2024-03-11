@@ -9,13 +9,13 @@ string sarr[10] = {
     "word_5", "word_6", "word_7", "word_8", "word_9"};
 
 
-// 声明函数返回的类型别名
-typedef string (&rsaT)[10];  // rsaT是一个别名，它表示类型是一个包含10个string对象的数组的引用
-using rsaT = string(&)[10];    // rsaT的等价声明
+// 使用类型别名
+typedef string arr[10];    // 使用typedef定义维度为10，元素类型为string的数组的类型别名arr
+using arr = string [10];    // 也可以使用using定义同样的类型别名
 
 
 // 使用类型别名
-rsaT func_1()
+arr &func_1()
 {
     return sarr;
 }
@@ -33,7 +33,7 @@ decltype(sarr) &func_3()
 }
 int main()
 {
-    // 调用完函数后直接输出其返回的数组的元素，以验证返回值的类型是数组的引用而非指针
+    // 调用函数，并打印数组元素
     for (auto s : func_1()) {
         cout << s << " ";
     }
@@ -48,5 +48,6 @@ int main()
         cout << s << " ";
     }
     cout << endl;
+
     return 0;
 }

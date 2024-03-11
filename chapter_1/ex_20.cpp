@@ -1,18 +1,12 @@
-# include <iostream>
-# include "Sales_item.h"
-
+#include <iostream>
+#include "Sales_item.h"
+using namespace std;
 int main()
 {
-    Sales_item sum, item;
-    // 输入第一个Sales_itme对象，存入sum变量
-    if (std::cin >> sum) {
-        // 连续输入多个对象，与sum相加并将结果赋给sum
-        while (std::cin >> item) {
-            sum += item;
-        }
-        // 输入结束后打印结果
-        std::cout << "Sum is: " << sum << std::endl;
+    Sales_item book;
+    cout << "Please enter the sales record of the book:(Ctrl+Z end)" << endl;
+    while (cin >> book) {
+        cout << "ISBN, quantity sold, sales and average price: " << book << endl;
     }
-
-    return 0; 
+    return 0;
 }

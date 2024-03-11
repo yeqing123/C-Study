@@ -1,52 +1,43 @@
 #include <iostream>
-#include <string>
-#include "Sales_data.h"  // 将Sales_data类放在了Sales_data.h头文件里
-int main()    // 程序的其他部分与练习41相同
-{
-    Sales_data sum;
-    double price;  // 每本书的单价
-    int cnt = 1;   // 记录每本书有几条销售记录
+#include "Sales_data.h"
 
-    // 输入第一条数据
-    if (std::cin >> sum.bookName >> price >> sum.sold_quantity) {
-        // 计算总销售额
-        sum.sold_amount = sum.sold_quantity * price;
+string make_plural(int count, const string &word, const string &s) 
+{
+    return (count > 1) ? word + s : word;
+}
+
+int main()    
+{
+    Sales_data total;                 // 保存交易记录
+    int bookSum = 0, infoSum = 0;     // 统计信息数量
+
+    // 输入第一条交易记录
+    if (std::cin >> total) {
+        ++infoSum;
+        ++bookSum;
         Sales_data data;
-        // 连续输入多条数据
-        while (std::cin >> data.bookName >> price >> data.sold_quantity) {
-            // 计算每条数据的总销售额
-            data.sold_amount = data.sold_quantity * price;
-            if (sum.bookName == data.bookName) {
-                // 累加总销售量和总销售额到sum中
-                sum.sold_quantity += data.sold_quantity;
-                sum.sold_amount += data.sold_amount;
-                cnt++;
+        // 连续输入多条交易记录
+        while (std::cin >> data) {
+            ++infoSum;                 // 统计交易记录的数量
+            // 累计相同书的销售记录
+            if (compareIsbn(total, data)) {
+                total += data;
             } else {
-                // 如果总销售额不为零，则打印结果
-                if (sum.sold_quantity != 0) {
-                    sum.average_price = sum.sold_amount / sum.sold_quantity;
-                    std::cout << "Sales data: " << sum.bookName << " " << sum.sold_quantity
-                                << " " << sum.sold_amount << " " << sum.average_price << std::endl;
-                    
-                } else {
-                    std::cerr << sum.bookName << " sold quantity is 0!" << std::endl; // 如果销售量为0，则输出错误提示
-                }
-                // 打印每本书输入记录的数量
-                std::cout << sum.bookName << " occurs " << cnt << " times.\n" << std::endl;
-                sum = data;  // 更新sum
-                cnt = 1;     // 重置cnt
+                // 打印上一本书的销售记录
+                std::cout << total << endl;
+                total = data;         // 更新total
+                ++bookSum;            // 统计书本数量
             }
         }
-        // 打印最后一组数据的结果
-        if (sum.sold_quantity != 0) {
-                sum.average_price = sum.sold_amount / sum.sold_quantity;
-                std::cout << "Sales data: " << sum.bookName << " " << sum.sold_quantity
-                            << " " << sum.sold_amount << " " << sum.average_price << std::endl;
-        } else {
-            std::cerr << sum.bookName << " sold quantity is 0!" << std::endl; // 如果销售量为0，则输出错误提示
-        }
-        // 打印每本书输入记录的数量
-        std::cout << sum.bookName << " occurs " << cnt << " times.\n" << std::endl;
+        // 打印最后一本书的交易记录
+        std::cout << total << endl;
+        // 打印最后的汇总数据
+        std::cout << "There are " << bookSum << " " << make_plural(bookSum, "book", "s")
+                  << " and " << infoSum << " transaction " << make_plural(infoSum, "record", "s")
+                  << endl;
+    } else {
+        cerr << "No data!?" << endl;
+        exit(1);
     }
     return 0;
 }

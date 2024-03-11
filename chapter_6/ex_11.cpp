@@ -8,8 +8,9 @@ void reset(int &i)
 int main()
 {
     int j = 42;
+    cout << "Before resetting: j = " << j << endl;
     // 调用reset将j的值重置为0
     reset(j);
-    cout << "j = " << j << endl;
+    cout << "After resetting: j = " << j << endl;
     return 0;
 }

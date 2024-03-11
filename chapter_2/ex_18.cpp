@@ -1,14 +1,15 @@
 # include <iostream>
 int main()
 {
-    int val = 10, *p = &val;
-    std::cout << val << " " << *p << std::endl;
-
-    int v = 20;
+    int i = 10, j = 20, *p = &i;
+    std::cout << p << " " << *p << std::endl;
     // 修改指针p的值
-    p = &v;
+    p = &j;
+    std::cout << p << " " << *p << std::endl;
     // 修改指针所指对象的值
     *p = 30;
-    std::cout << v << " " << *p << std::endl;
+    std::cout << p << " " << *p << std::endl;
+    j = 40;
+    std::cout << p << " " << *p << std::endl;
     return 0;
 }

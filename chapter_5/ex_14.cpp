@@ -6,32 +6,28 @@ using std::endl;
 using std::string;
 int main()
 {
-    string curr, pre, word;
-    unsigned cnt = 1, repeatCnt = 0;
-    // 连续输入若干个单词，统计连续出现最多的单词及其重复次数
-    cout << "Please enter the words continuously:" << endl;
-    // 先输入第一个单词
-    if (cin >> pre) {
-        while (cin >> curr) {
-            if (curr == pre) {
-                ++cnt;
-            } else {
-                if (cnt > repeatCnt) {
-                    word = pre;
-                    repeatCnt = cnt;
-                    cnt = 1;   // 从1而不是0开始，记录重复次数
-                }
-                pre = curr;
+    // 定义三个string对象，分别保存当前单词、上一个单词和重复次数最多的单词
+    string currWord, preWord = "\0", mostWord;
+    unsigned cnt = 1, maxCnt = 0;
+    cout << "Please enter some words:" << endl;
+    while (cin >> currWord) {
+        if (currWord == preWord) {
+            ++cnt;
+        } else {
+            if (cnt > maxCnt) {      // 如果出现的次数大于记录的次数，则更新记录
+                maxCnt = cnt;
+                mostWord = preWord;
             }
+            cnt = 1;
+            preWord = currWord;
         }
-        // 处理结尾处连续出现的单词
-        if (cnt > repeatCnt) {
-            word = curr;
-            repeatCnt = cnt;
-        }
-        // 输出统计结果
-        cout << "The word with the most consecutive occurrence is: " << word << '\n'
-             << "Number of replication: " << repeatCnt << endl;
     }
-
+    // 输出统计结果
+    if (maxCnt > 1) {
+        cout << "The word with the most consecutive occurrence is: " << mostWord << '\n'
+            << "It appeared " << maxCnt << " times" << endl;
+    } else {
+        cout << "No repeated words! Each word appears only once." << endl;
+    }
+    return 0;
 }

@@ -12,22 +12,21 @@ bool str_subrange(const string &str1, const string &str2)
     // 检查两个string对象的对应字符是否相等，以较短的字符串长度为限
     for (decltype(size) i = 0; i != size; ++i) {
         if (str1[i] != str2[i]) {
-            return ;   // 错误：没有返回值
+            return false;   // 错误：没有返回值
         }
     }
-    // 错误：控制流可能尚未返回任何值就结束了函数的执行
-    // 编译器可能检查不出来这一错误
+    // 这里还存在一个错误，当for循环执行完毕后，应该在最后还有一个return true
 }
 /*
-* 在Visul Studio Code 1.86.2编译器中，首先对程序第15行进行了报错。
-* 当我修复了这一错误后，编译去就不在报错了。并且当出现结果为ture时（即一个字符串是另一个的子区间时），
-* 编译器还自动在函数最后加上了隐藏的return true语句。
+* 在Visul Studio Code 1.86.2编译器中，首先对程序第15行进行了报错，
+* 但遗憾的是编译器没有发现另外一个错误。当出现for循环执行完毕时（即一个字符串是另一个的子区间时），
+* 函数依然返回了true。也许是编译器自动在最后加上了语句return true。
 */
 
 int main()
 {
     string str1("same"), str2("same string");
-    cout << "Whether strings str1 and str2 exist subrange of one is the other: " 
+    cout << "Are there substrings in two strings where one is the other?\n" 
          << (str_subrange(str1, str2) ? "true" : "false") << endl;
     return 0;
 }

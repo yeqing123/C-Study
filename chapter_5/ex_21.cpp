@@ -9,25 +9,26 @@ using std::string;
 */
 int main()
 {
-    string s1, s2;
-    cout << "Please enter words continuously:" << endl;
-    // 先输入第一个单词
-    if (cin >> s1) {
-        // 连续输入单词，并判断是否存在一个单词连续出现两次的情况
-        while (cin >> s2 && !s2.empty()) {
-            if (!isupper(s2[0])) {  // 如果首字母不是大写字母，则终止执行本次循环并开始下一次循环
-                continue;
-            }
-            if (s1 == s2) {
-                cout << "Word '" << s1 << "' appears repeatedly." << endl;
-                break;    // 结束while循环
-            } else { 
-                s1 = s2;
-            }
+    string prestr, currstr;
+    bool bl;    // 定义一个布尔值，用来标记是否存在以大写字母开始的字符串连续重复出现的情况
+    cout << "Please enter some strings:" << endl;
+    while (cin >> currstr) {
+        bl = false;
+        if (!isupper(currstr[0])) {  // 如果字符串不是以大写字母开头的，则终止本次循环，执行下一次循环
+            continue;
         }
-        if (!cin) {  // 当输入流结束时，说明没有出现单词连续重复的情况
-            cout << "No words are repeated consecutively!" << endl;
+        if (prestr == currstr) {
+            bl = true;
+            break;    // 结束while循环
+        } else { 
+            prestr = currstr;
         }
     }
+    if (bl) {  // 如果bl为真，则有重复出现的字符串，否则就是没有
+        cout << "String '" << currstr << "' appears repeatedly continuously." << endl;
+    } else {
+        cout << "Does not start with a capital letter string repeated continuously!" << endl;
+    }
+    
     return 0;
 }

@@ -6,9 +6,9 @@ using std::endl;
 using std::vector;
 int main()
 {
-    // 使用包含整型元素的vector对象，初始化一个整型数组
     vector<int> ivec = {2, 4, 6, 8, 10};
     int iarr[ivec.size()];
+    // 要将ivec中的元素拷贝给数组，只能遍历ivec的所有元素，逐一拷贝
     for (unsigned index = 0; index < ivec.size(); index++) {
         iarr[index] = ivec[index];
     }

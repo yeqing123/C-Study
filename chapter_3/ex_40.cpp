@@ -6,17 +6,15 @@ using std::endl;
 int main()
 {
     char s1[] = "hello ", s2[] = "world";
-    // 将s2连接到s1的尾端
-    strcat(s1, s2);
-    cout << strlen(s1) << endl;
-    // 定义s3，其维度等于连接后的字符串长度
-    char s3[strlen(s1)];
-    // 将连接后的字符串拷贝到s3中
-    strcpy(s3, s1);
+    // 定义一个结果数组，长度为拼接后的字符串长度（注意最后要多一个空字符）
+    char result[strlen(s1) + strlen(s2) - 1];
+    // 将字符串s1拷贝到结果字符串中
+    strcpy(result, s1);
+    // 将字符串s2拼接到结果字符串的末尾
+    strcat(result, s2);
     // 打印结果
-    for (char c : s3) {
-        cout << c;
-    }
-    cout << endl;
+    cout << s1 << endl;
+    cout << s2 << endl;
+    cout << result << endl;
     return 0;
 }

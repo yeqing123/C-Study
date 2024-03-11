@@ -7,9 +7,10 @@ using namespace std;
 */
 int main(int argc, char ** argv)
 {
-    // 本程序中argv中只有一个元素，它指向包含路径的程序名字   
+    string str;  
     for (size_t i = 0; i != argc; ++ i) {
-        cout << "argv[" << i << "] = \"" << argv[i] << "\"" << endl;
+        str += argv[i];
     }
+    cout << str << endl;
     return 0;
 }

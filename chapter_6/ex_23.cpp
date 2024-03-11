@@ -5,11 +5,25 @@ using namespace std;
 * 使每个函数都可以传入int i = 0, j[2] = {0, 1}，两个实参。
 */
 
-// 想要同时传入i,j两个实参，似乎只能显示传递一个表示数组大小的形参
-void print(const int arr[], size_t dimension)
+void print1(const int *ip) 
 {
-    for (size_t i = 0; i < dimension; ++i) {
-        cout << arr[i] << " ";
+    if (ip) {
+        cout << *ip << endl;
+    }
+}
+
+void print2(const int *ip, size_t sz)
+{
+    for (int i = 0; i < sz; ++i) {
+        cout << *ip++ << " ";
+    }
+    cout << endl;
+}
+
+void print3(const int *beg, const int *end)
+{
+    while (beg != end) {
+        cout << *beg++ << " ";
     }
     cout << endl;
 }
@@ -17,7 +31,11 @@ void print(const int arr[], size_t dimension)
 int main()
 {
     int i = 0, j[2] = {0, 1};
-    print(&i, 1);
-    print(j, end(j) - begin(j));
+    cout << "print i:" << endl;
+    print1(&i);            
+    print2(&i, 1);         
+    cout << "print j:" << endl;
+    print2(j, sizeof(j) / sizeof(*j));        
+    print3(begin(j), end(j));    
     return 0;
 }
