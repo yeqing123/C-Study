@@ -1,3 +1,5 @@
+#ifndef DATE_H
+#define DATE_H
 #include <iostream>
 #include <string>
 using namespace std;
@@ -6,10 +8,13 @@ using namespace std;
 // 如：January 1, 1900、1/1/1990、Jan 1 1900等。
 class Date {
 public:
+    Date(): year(0), month(0), day(0) { }                     // 默认构造函数
     Date(string date) 
     {
-        trim(date);               // 去掉字符串两端的空格
-        if (!verify(date)) {      // 验证传入构造函数的日期格式是否正确
+        trim(date);                                           // 取消两端空格
+        if (date.empty()) {
+            cout << "No date!" << endl;
+        } else if (!verify(date)) {      // 验证传入构造函数的日期格式是否正确
             cerr << "There is an error in the date format!" << endl;
         } else {
             auto first_slash_pos = date.find_first_of("/");    // 查找是否为“月/日/年”这样的格式
@@ -81,67 +86,82 @@ public:
         }
     }
     // 将日期打印到指定的输出流中
-    ostream &print(ostream &os) const {
-        os << "year: " << year << "\tmonth: " << month << "\tday: " << day;
-        return os;
-    }
+    ostream &print_date(ostream&) const;
+    // 判断日期是否为空
+    bool empty();
+    // 验证日期字符串的格式是否合法
+    bool verify(string&) const;
 private:
     unsigned year = 0;
     unsigned month = 0;
     unsigned day = 0;
-    // 验证日期字符串的格式是否合法
-    bool verify(string date) const 
-    {
-        // 如果在字符串中存在"/"，则"/"只能出现两次
-        if (separator_count(date, "/") == 2) {
-            return true;
-        } else {                                                        // 当字符串中没有“/”时，则需要对其他格式进行分析判断
-            int count = 0, sum = 0;                                     // count保存每当年、月、日的分隔符连续出现时的个数
-                                                                        // sum保存字符串中一共间隔出现了几次分隔符（连续的算作一次）
-            // while循环每次都会得到一个新的count（一个连续的分隔符的数量）
-            while ((count = separator_count(date, "., ", true)) != 0) {
-                ++sum;                                                  // 累计分隔符间隔性出现的次数
-                date = date.substr(date.find_first_of("., ") + count);  // 截掉字符串中已经查找过的部分，只保留剩余部分
-            }
-            if (sum == 2) {                                             // 只有当分隔符间隔性的出现2次，日期格式才算合法
-                return true;
-            }
-        }
-        return false;
-    }
-    // 统计date字符串中年、月、日的分隔符separator出现的次数。如果第三个参数continuous为true，
-    // 则只统计第一次连续出现的分隔符个数，后面的不连续部分不予统计。如果传入该参数的实参为false，或者没有实参（默认值为false），
-    // 则统计date中所有的分隔符的个数。
-    int separator_count(string date, string separator, bool continuous = false) const 
-    {
-        int count = 0, pos = 0;
-        while ((pos = date.find_first_of(separator, pos)) != string::npos) {
-            ++count;
-            ++pos;
-            // 当continuous为true时，只统计第一次连续出现的分隔符个数
-            if (continuous && pos < date.size() && 
-                    (date.substr(pos, 1).find_first_of(separator)) == string::npos) {
-                break;
-            }
-        }
-        return count;
-    }
-    //C++ 去字符串两边的空格
-    void trim(string &s) const
-    {
-        if (s.empty()) {
-            return ;
-        }
-        s.erase(0, s.find_first_not_of(" "));
-        s.erase(s.find_last_not_of(" ") + 1);
-    }
+    // 统计date字符串中年、月、日的分隔符separator出现的次数。
+    int separator_count(string, string, bool) const;
+    // 去掉字符串两边的空格
+    void trim(string&);
 };
 
-int main()
+
+// 统计date字符串中年、月、日的分隔符separator出现的次数。如果第三个参数continuous为true，
+// 则只统计第一次连续出现的分隔符个数，后面的不连续部分不予统计。如果传入该参数的实参为false，或者没有实参（默认值为false），
+// 则统计date中所有的分隔符的个数。
+inline int Date::separator_count(string date, string separator, bool continuous = false) const
 {
-    Date("1/1/2024").print(cout) << endl;
-    Date("Nov.25 1999").print(cout) << endl;
-    Date("6th   May,   2024").print(cout) << endl;
-    Date("Feb   20   2013").print(cout) << endl;   
-    Date("September22nd  2012").print(cout) << endl;  // 日期格式错误，年、月、日都需要由分隔符“,”、“/”或空格进行分隔
+    int count = 0, pos = 0;
+    while ((pos = date.find_first_of(separator, pos)) != string::npos) {
+        ++count;
+        ++pos;
+        // 当continuous为true时，只统计第一次连续出现的分隔符个数
+        if (continuous && pos < date.size() && 
+                (date.substr(pos, 1).find_first_of(separator)) == string::npos) {
+            break;
+        }
+    }
+    return count;
 }
+
+// 去掉字符串两边的空格
+inline void Date::trim(string &s)
+{
+    if (s.empty()) {
+        return ;
+    }
+    s.erase(0, s.find_first_not_of(" "));
+    s.erase(s.find_last_not_of(" ") + 1);
+}
+
+// 将日期打印到指定的输出流中
+ostream &Date::print_date(ostream &os) const
+{
+    os << "year: " << year << "\tmonth: " << month << "\tday: " << day;
+    return os;
+}
+
+// 判断是否为空
+bool Date::empty() 
+{
+    return year == 0 && month == 0 && day == 0;
+}
+
+// 验证日期字符串的格式是否合法
+bool Date::verify(string &date) const
+{      
+    string str = date;       // 拷贝一份，防止verify修改字符串
+    // 如果在字符串中存在"/"，则"/"只能出现两次
+    if (separator_count(str, "/") == 2) {
+        return true;
+    } else {                                                        // 当字符串中没有“/”时，则需要对其他格式进行分析判断
+        int count = 0, sum = 0;                                     // count保存每当年、月、日的分隔符连续出现时的个数
+                                                                    // sum保存字符串中一共间隔出现了几次分隔符（连续的算作一次）
+        // while循环每次都会得到一个新的count（一个连续的分隔符的数量）
+        while ((count = separator_count(str, "., ", true)) != 0) {
+            ++sum;                                                  // 累计分隔符间隔性出现的次数
+            str = str.substr(str.find_first_of("., ") + count);  // 截掉字符串中已经查找过的部分，只保留剩余部分
+        }
+        if (sum == 2) {                                             // 只有当分隔符间隔性的出现2次，日期格式才算合法
+            return true;
+        }
+    }
+    return false;
+}
+#endif
