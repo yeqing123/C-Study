@@ -23,23 +23,12 @@ void runQueries(ifstream &infile)
 
 int main()
 {
-    ifstream infile("../input_file.txt");
+    ifstream infile("input_file.txt");
     if (!infile) {
         cout << "File open failed!" << endl;
         return -1;
     }
     runQueries(infile);
-
-    // 测试使用智能指针的优势：只要对map和vector成员的引用计数不为0，
-    // 就不会释放TextQuery的内存
-    cout << "\nTest smart pointer, query of the word is: " << endl;
-    ifstream infile2("../input_file.txt");
-    QueryResult qr;
-    {
-        TextQuery tq(infile2);
-        qr = tq.query("is");
-    }    // 如果使用普通指针，那么到这里tq就会被释放
-    print(cout, qr) << endl;
 
     return 0;
 }

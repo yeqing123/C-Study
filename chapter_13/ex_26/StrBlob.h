@@ -15,6 +15,10 @@ public:
     typedef vector<string>::size_type size_type;
     StrBlob();
     StrBlob(initializer_list<string> li);
+    // 添加拷贝构造函数
+    StrBlob(const StrBlob&);
+    // 添加赋值运算符
+    StrBlob &operator=(const StrBlob&);
     bool empty();
     size_type size();
     // 访问元素
@@ -24,8 +28,6 @@ public:
     const string& back() const;
     // 删除和添加元素
     void push_back(const string&);
-    // 右值引用版本的push_back
-    void push_back(string &&);
     void pop_back();
     // 返回指向首个元素的StrBlobPtr对象
     StrBlobPtr begin() const;
@@ -43,6 +45,17 @@ inline StrBlob::StrBlob() {
 
 inline StrBlob::StrBlob(initializer_list<string> li) {
     data = make_shared<vector<string>>(li);
+}
+
+inline StrBlob::StrBlob(const StrBlob &sb)
+{
+    data = make_shared<vector<string>>(*sb.data);            // data指向新的对象
+}
+
+inline StrBlob &StrBlob::operator=(const StrBlob &sb)
+{
+    data = make_shared<vector<string>>(*sb.data);   // data指向新的对象
+    return *this;
 }
 
 inline bool StrBlob::check(size_type index, const string &msg) const {
@@ -82,15 +95,7 @@ inline const string& StrBlob::back() const {
 }
 
 inline void StrBlob::push_back(const string &s) {
-    cout << "Lvalue reference version of push_back" << endl;
     data->push_back(s);
-}
-
-// 完成13章练习55，添加一个右值引用版本的push_back
-inline void StrBlob::push_back(string &&s)
-{
-    cout << "Rvalue reference version of push_back" << endl;
-    data->push_back(std::move(s));   // 将s变为右值，才能调用vector的右值引用版本的push_back
 }
 
 inline void StrBlob::pop_back() {
