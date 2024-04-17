@@ -19,9 +19,13 @@ public:
     Sales_data() {};
     Sales_data(string &book) : bookName(book) {}
     Sales_data(istream &is) { is >> *this; }
+    Sales_data& operator=(const string&);  // 接受表示ISBN的string，将其赋给=左侧的Sales_data对象
     Sales_data& operator+=(const Sales_data&);
     Sales_data& operator-=(const Sales_data&);
     string isbn() const { return bookName; }
+    // 定义类型转换运算符
+    operator string() const;
+    operator double() const;    
 private:
     string bookName;   // 书名
     unsigned units_sold = 0;    // 销量
@@ -30,11 +34,17 @@ private:
     double discount = 0.0;      // 折扣
 };
 
+inline Sales_data& Sales_data::operator=(const string &s)
+{
+    bookName = s;
+    return *this;
+}
+
 inline ostream& operator<<(ostream &os, const Sales_data &sd)
 {
-    os << "ISBN: " << sd.bookName << " \\units sold: " << sd.units_sold 
-       << " \\sales price: " << sd.salesprice << " \\selling price: " << sd.sellingprice 
-       << " \\sales_revenue: " << sd.units_sold * sd.sellingprice << " \\discount: " << sd.discount;
+    os << "ISBN: " << sd.bookName << "  units sold: " << sd.units_sold 
+       << "  average price: " << sd.salesprice << "  average selling price: " << sd.sellingprice 
+       << "  sales_revenue: " << sd.units_sold * sd.sellingprice << "  discount: " << sd.discount;
     return os;
 }
 
@@ -111,5 +121,19 @@ Sales_data& Sales_data::operator-=(const Sales_data &sd)
         discount = (sellingprice / salesprice) * 10;
     }
     units_sold -= sd.units_sold;   // 总销售量放在最后计算
+}
+
+Sales_data::operator string() const
+{
+    return "ISBN: " + bookName 
+       + "  units sold: " + to_string(units_sold) 
+       + "  average price: " + to_string(salesprice) 
+       + "  average selling price: " + to_string(sellingprice) 
+       + "  sales_revenue: " + to_string(units_sold * sellingprice) 
+       + "  discount: " + to_string(discount);
+} 
+
+Sales_data::operator double() const{
+    return units_sold * sellingprice;
 }
 #endif

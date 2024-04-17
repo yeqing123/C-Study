@@ -12,6 +12,12 @@ using namespace std;
 
 class String {
 friend ostream &operator<<(ostream&, const String&);
+friend bool operator==(const String&, const String&);
+friend bool operator!=(const String&, const String&);
+friend bool operator<(const String&, const String&);
+friend bool operator<=(const String&, const String&);
+friend bool operator>(const String&, const String&);
+friend bool operator>=(const String&, const String&);
 public:
     String() : ch(nullptr), first_free(nullptr), cap(nullptr) { }
     String(const char[]);   // 从字面值常量到String的转换，都要依然该构造函数
@@ -19,7 +25,9 @@ public:
     String(String&&) noexcept;     // 移动构造函数
     ~String() { free(); }
     String &operator=(String &&) noexcept;   // 移动赋值运算符
-    String &operator=(const String&);        // 拷贝赋值运算符
+    String &operator=(const String&);        // 拷贝赋值运算符or
+    char &operator[] (size_t n);              // 下标运算符
+    const char &operator[] (size_t n) const;  // const版本
     String &append(const String&);
     void push_back(const char);
     void pop_back();
@@ -79,6 +87,66 @@ ostream &operator<<(ostream &os, const String &s)
     return os;
 }
 
+bool operator==(const String &rs, const String &ls)
+{
+    // 如果两个字符串不等长，则返回false
+    if (rs.size() != ls.size()) {
+        return false;
+    }
+    // 如果等长，则逐个判断是否相等
+    auto rit = rs.begin();
+    auto lit = ls.begin();
+    while (rit != rs.end() && lit != ls.end()) {
+        if (*rit != *lit) {
+            return false;
+        }
+        ++rit;
+        ++lit;
+    }
+    return true;
+}
+bool operator!=(const String &rs, const String &ls) 
+{
+    return !(rs == ls);
+}
+
+bool operator<(const String &rs, const String &ls) 
+{
+    for (auto rit = rs.begin(), lit = ls.begin();  // 逐个元素比较，当首次出现元素不等时，返回比较结果
+        rit != rs.end() && lit != ls.end(); ++rit, ++lit)
+    {
+        if (*rit < *lit) {        
+            return true;
+        } else if (*rit > *lit) {
+            return false;
+        }
+    }
+    return rs.size() < ls.size();  // 如果两个对象的元素均无不等，则按照长度进行比较
+}
+
+bool operator<=(const String &rs, const String &ls)
+{
+    return rs < ls || rs == ls;
+}
+bool operator>(const String &rs, const String &ls)
+{
+    for (auto rit = rs.begin(), lit = ls.begin();  // 逐个元素比较，当首次出现元素不等时，返回比较结果
+        rit != rs.end() && lit != ls.end(); ++rit, ++lit)
+    {
+        if (*rit > *lit) {        
+            return true;
+        } else if (*rit < *lit) {
+            return false;
+        }
+    }
+    return rs.size() > ls.size();  // 如果两个对象的元素均无不等，则按照长度进行比较
+}
+
+bool operator>=(const String &rs, const String &ls)
+{
+    return rs > ls || rs == ls;
+}
+
 // 移动赋值运算符，并保证自赋值的正确
 inline String &String::operator=(String &&rs) noexcept
 {
@@ -102,6 +170,22 @@ inline String &String::operator=(const String &rs)
     ch = newdata.first;
     first_free = cap = newdata.second;
     return *this;
+}
+
+inline char &String::operator[] (size_t n)
+{
+    if (n < 0 || n >= size()) {
+        throw out_of_range("index out of range");
+    }
+    return *(ch + n);
+}
+
+inline const char &String::operator[] (size_t n) const
+{
+    if (n < 0 || n >= size()) {
+        throw out_of_range("index out of range");
+    }
+    return *(ch + n);
 }
 
 // 将参数给定的String添加字符串的末尾，返回连接后的String的引用

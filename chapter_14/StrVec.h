@@ -26,12 +26,17 @@
 #include <string>
 #include <initializer_list>
 #include <algorithm>
+#include <iostream>
 
 using namespace std;
 
 class StrVec {
 friend bool operator==(const StrVec&, const StrVec&);
 friend bool operator!=(const StrVec&, const StrVec&);
+friend bool operator<(const StrVec&, const StrVec&);
+friend bool operator<=(const StrVec&, const StrVec&);
+friend bool operator>(const StrVec&, const StrVec&);
+friend bool operator>=(const StrVec&, const StrVec&);
 public:
     StrVec() : elements(nullptr), first_free(nullptr), cap(nullptr) { }
     StrVec(const initializer_list<string>);
@@ -40,6 +45,9 @@ public:
     ~StrVec() { free(); }
     StrVec &operator=(const StrVec&);
     StrVec &operator=(StrVec&&) noexcept;   // 移动赋值运算符
+    StrVec &operator=(const initializer_list<string>&);            // 接受initializer_list对象的赋值运算符
+    string &operator[](size_t n);           // 重载下标运算符
+    const string &operator[](size_t n) const; // const版本
     void push_back(const string&);
     void resize(size_t);                
     void resize(size_t, const string&);
@@ -107,10 +115,38 @@ inline StrVec &StrVec::operator=(StrVec &&rsv) noexcept
 // 拷贝赋值运算符
 inline StrVec &StrVec::operator=(const StrVec &rsv)
 {
-    auto newdata = alloc_n_copy(rsv.begin(), rsv.end());
+    if (this != &rsv) {    // 如果是自赋值，则再执行下面的操作就是多余的
+        auto newdata = alloc_n_copy(rsv.begin(), rsv.end());
+        free();
+        elements = newdata.first;
+        first_free = cap = newdata.second;
+    }
+    return *this;
+}
+
+// 接受initializer_list对象的赋值运算符
+inline StrVec &StrVec::operator=(const initializer_list<string> &li)
+{
+    auto newdata = alloc_n_copy(li.begin(), li.end());
     free();
     elements = newdata.first;
     first_free = cap = newdata.second;
+}
+
+inline string &StrVec::operator[](size_t n)
+{
+    if (n < 0 || n >= size()) {
+        throw out_of_range("index out of range");
+    }
+    return *(elements + n);
+}
+
+inline const string &StrVec::operator[](size_t n) const
+{
+    if (n < 0 || n >= size()) {
+        throw out_of_range("index out of range");
+    }
+    return *(elements + n);
 }
 
 // 向容器末尾添加元素
@@ -125,7 +161,7 @@ inline pair<string*, string*> StrVec::alloc_n_copy(const string *b, const string
 {
     auto p = alloc.allocate(e - b);
     auto dest = p;
-    return {p, uninitialized_copy_n(b, e - b, dest)};
+    return {p, uninitialized_copy(b, e, dest)};
 }
 
 inline void StrVec::free()
@@ -226,6 +262,49 @@ bool operator==(const StrVec &rsv, const StrVec &lsv)
 bool operator!=(const StrVec &rsv, const StrVec &lsv)
 {
     return !(rsv == lsv);
+}
+
+// 重载<运算符
+bool operator<(const StrVec &rsv, const StrVec &lsv)
+{
+    for (auto rp = rsv.begin(), lp = lsv.begin(); 
+        rp != rsv.end() && lp != lsv.end(); ++rp, ++lp)
+    {
+        if (*rp < *lp) {
+            return true;
+        } else if (*rp > *lp) {
+            return false;
+        }
+    }    
+    return rsv.size() < lsv.size();   // 当两个对象长度不相等时，直接比较其长度
+}
+
+// 重载<=运算符
+bool operator<=(const StrVec &rsv, const StrVec &lsv)
+{ 
+    return rsv < lsv || rsv == lsv;
+}
+
+// 重载>运算符
+bool operator>(const StrVec &rsv, const StrVec &lsv)
+{
+    for (auto rp = rsv.begin(), lp = lsv.begin(); 
+        rp != rsv.end() && lp != lsv.end(); ++rp, ++lp)
+    {
+        if (*rp > *lp) {
+            return true;
+        } else if (*rp < *lp) {
+            return false;
+        }
+    }    
+    
+    return rsv.size() > lsv.size();   // 当两个对象长度不相等时，直接比较其长度
+}
+
+// 重载>=运算符
+bool operator>=(const StrVec &rsv, const StrVec &lsv)
+{
+    return rsv > lsv || rsv == lsv;
 }
 #endif
 
